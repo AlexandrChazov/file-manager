@@ -1,9 +1,21 @@
-import { readdir, statSync } from "fs";
+import {
+	access,
+	constants,
+	createReadStream,
+	createWriteStream,
+	readdir,
+	rename,
+	rm,
+	statSync,
+	writeFile,
+} from "fs";
 import { homedir } from "os";
 import { join, resolve } from "path";
 
 import { parseArgs } from "./parseArgs";
 import { writeCurrentDir } from "./writeCurrentDir";
+import { writeFailed } from "./writeFailed";
+import { args } from "./args";
 
 const username = parseArgs();
 process.chdir(homedir());
@@ -12,11 +24,9 @@ process.stdout.write(`Welcome to the File Manager, ${username}!\n`);
 writeCurrentDir();
 process.stdout.write("Enter a command.\n");
 
-process.stdin.on("data", (data) => {
-	const args = data.toString().trim().split(" ");
-	const commandName = args[0];
-	const arg = args[1];
-	switch (commandName) {
+process.stdin.on("data", (buffer) => {
+	const { command, arg1, path1, path2 } = args(buffer);
+	switch (command) {
 		case ".exit": {
 			process.exit(0);
 			break;
@@ -26,13 +36,13 @@ process.stdin.on("data", (data) => {
 			break;
 		}
 		case "cd": {
-			if (arg === "..") {
-				process.chdir(arg);
+			if (arg1 === "..") {
+				process.chdir(arg1);
 			} else {
-				const isRelative = arg[0] === ".";
+				const isRelative = arg1[0] === ".";
 				const newPath = isRelative
-					? join(process.cwd(), arg.slice(2).trim())
-					: resolve(arg.slice(2).trim());
+					? join(process.cwd(), arg1.slice(2))
+					: resolve(arg1.slice(2));
 				process.chdir(newPath);
 			}
 			break;
@@ -62,6 +72,80 @@ process.stdin.on("data", (data) => {
 			});
 			break;
 		}
+		case "cat": {
+			let result = "";
+			const readStream = createReadStream(path1);
+			readStream.on("data", (chunk) => {
+				result = result.concat(chunk.toString());
+			});
+			readStream.on("end", () => {
+				process.stdout.write(`${result}\n`);
+			});
+			break;
+		}
+		case "add": {
+			writeFile(path1, "", (err) => {
+				if (err) {
+					writeFailed();
+				}
+			});
+			break;
+		}
+		case "rn": {
+			access(path1, constants.F_OK, (err) => {
+				if (err) writeFailed();
+				access(path2, constants.F_OK, (err) => {
+					if (!err) writeFailed();
+					rename(path1, path2, (err) => {
+						if (err) writeFailed();
+					});
+				});
+			});
+			break;
+		}
+		case "cp": {
+			access(path1, constants.F_OK, (err) => {
+				if (err) writeFailed();
+				access(path2, constants.F_OK, (err) => {
+					if (!err) writeFailed();
+					const readStream = createReadStream(path1);
+					const writeStream = createWriteStream(path2);
+					readStream.pipe(writeStream);
+				});
+			});
+			break;
+		}
+		case "mv": {
+			access(path1, constants.F_OK, (err) => {
+				if (err) writeFailed();
+				access(path2, constants.F_OK, (err) => {
+					if (!err) writeFailed();
+					const readStream = createReadStream(path1);
+					const writeStream = createWriteStream(path2);
+					readStream.on("data", (chunk) => {
+						writeStream.write(chunk);
+					});
+					readStream.on("close", () => {
+						writeStream.close();
+					});
+					writeStream.on("close", () => {
+						rm(path1, (err) => {
+							if (err) writeFailed();
+						});
+					});
+				});
+			});
+			break;
+		}
+		case "rm": {
+			access(path1, constants.F_OK, (err) => {
+				if (err) writeFailed();
+				rm(path1, (err) => {
+					if (err) writeFailed();
+				});
+			});
+			break;
+		}
 		default: {
 			process.stdout.write("Invalid input\n");
 			return;
@@ -71,7 +155,7 @@ process.stdin.on("data", (data) => {
 });
 
 process.on("uncaughtException", () => {
-	process.stdout.write("Operation failed\n");
+	writeFailed();
 });
 
 process.on("exit", () => {
