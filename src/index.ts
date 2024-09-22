@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import {
 	access,
 	constants,
@@ -178,6 +179,20 @@ process.stdin.on("data", (buffer) => {
 					writeInvalidInput();
 				}
 			}
+			break;
+		}
+		case "hash": {
+			const hash = createHash("sha256");
+			const readStream = createReadStream(path1);
+			readStream.on("data", (chunk) => {
+				hash.update(chunk);
+			});
+			readStream.on("error", () => {
+				writeFailed();
+			});
+			readStream.on("end", () => {
+				process.stdout.write(`${hash.digest("hex")}\n`);
+			});
 			break;
 		}
 		default: {
