@@ -12,11 +12,13 @@ import {
 } from "fs";
 import { arch, homedir, cpus, EOL, userInfo } from "os";
 import { join, resolve } from "path";
+import { createBrotliCompress, createBrotliDecompress } from "zlib";
 
+import { args } from "./args";
+import { handleError } from "./handleError";
 import { parseArgs } from "./parseArgs";
 import { writeCurrentDir } from "./writeCurrentDir";
 import { writeFailed } from "./writeFailed";
-import { args } from "./args";
 import { writeInvalidInput } from "./writeInvalidInput";
 
 const username = parseArgs();
@@ -193,6 +195,28 @@ process.stdin.on("data", (buffer) => {
 			readStream.on("end", () => {
 				process.stdout.write(`${hash.digest("hex")}\n`);
 			});
+			break;
+		}
+		case "compress": {
+			const brotli = createBrotliCompress();
+			const readStream = createReadStream(path1);
+			const writeStream = createWriteStream(path2);
+			readStream
+				.on("error", handleError)
+				.pipe(brotli)
+				.pipe(writeStream)
+				.on("error", handleError);
+			break;
+		}
+		case "decompress": {
+			const brotli = createBrotliDecompress();
+			const readStream = createReadStream(path1);
+			const writeStream = createWriteStream(path2);
+			readStream
+				.on("error", handleError)
+				.pipe(brotli)
+				.pipe(writeStream)
+				.on("error", handleError);
 			break;
 		}
 		default: {
