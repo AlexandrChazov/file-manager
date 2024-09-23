@@ -10,26 +10,27 @@ import {
 	statSync,
 	writeFile,
 } from "fs";
-import { arch, homedir, cpus, EOL, userInfo } from "os";
+import { homedir } from "os";
 import { join, resolve } from "path";
 import { createBrotliCompress, createBrotliDecompress } from "zlib";
 
-import { args } from "./args";
-import { handleError } from "./handleError";
-import { parseArgs } from "./parseArgs";
-import { writeCurrentDir } from "./writeCurrentDir";
-import { writeFailed } from "./writeFailed";
-import { writeInvalidInput } from "./writeInvalidInput";
+import {
+	insert,
+	handleError,
+	username,
+	writeCurrentDir,
+	writeFailed,
+	writeInvalidInput,
+} from "./lib";
+import { osCommands } from "./osCommands";
 
-const username = parseArgs();
 process.chdir(homedir());
-
-process.stdout.write(`Welcome to the File Manager, ${username}!\n`);
+process.stdout.write(`Welcome to the File Manager, ${username()}!\n`);
 writeCurrentDir();
 process.stdout.write("Enter a command.\n");
 
 process.stdin.on("data", (buffer) => {
-	const { command, arg1, path1, path2 } = args(buffer);
+	const { command, arg, path1, path2 } = insert(buffer);
 	switch (command) {
 		case ".exit": {
 			process.exit(0);
@@ -40,13 +41,13 @@ process.stdin.on("data", (buffer) => {
 			break;
 		}
 		case "cd": {
-			if (arg1 === "..") {
-				process.chdir(arg1);
+			if (arg === "..") {
+				process.chdir(arg);
 			} else {
-				const isRelative = arg1[0] === ".";
+				const isRelative = arg[0] === ".";
 				const newPath = isRelative
-					? join(process.cwd(), arg1.slice(2))
-					: resolve(arg1.slice(2));
+					? join(process.cwd(), arg.slice(2))
+					: resolve(arg.slice(2));
 				process.chdir(newPath);
 			}
 			break;
@@ -151,36 +152,7 @@ process.stdin.on("data", (buffer) => {
 			break;
 		}
 		case "os": {
-			switch (arg1) {
-				case "--EOL": {
-					process.stdout.write(`${JSON.stringify(EOL)}\n`);
-					break;
-				}
-				case "--cpus": {
-					const cores = cpus();
-					process.stdout.write(`overall amount of CPUS: ${cores.length}\n`);
-					cores.forEach((core) => {
-						process.stdout.write(`model: ${core.model}\n`);
-						process.stdout.write(`clock rate: ${core.speed / 1000} GHz\n`);
-					});
-					break;
-				}
-				case "--homedir": {
-					process.stdout.write(`${userInfo().homedir}\n`);
-					break;
-				}
-				case "--username": {
-					process.stdout.write(`${userInfo().username}\n`);
-					break;
-				}
-				case "--architecture": {
-					process.stdout.write(`${arch()}\n`);
-					break;
-				}
-				default: {
-					writeInvalidInput();
-				}
-			}
+			osCommands(arg);
 			break;
 		}
 		case "hash": {
@@ -233,6 +205,6 @@ process.on("uncaughtException", () => {
 
 process.on("exit", () => {
 	process.stdout.write(
-		`Thank you for using File Manager, ${username}, goodbye!\n`,
+		`Thank you for using File Manager, ${username()}, goodbye!\n`,
 	);
 });

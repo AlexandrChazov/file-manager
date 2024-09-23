@@ -5,13 +5,13 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "main": "src/index.js",
+  "main": "src/main.ts",
   "type": "module",
   "scripts": {
     "format": "prettier --write \"src/**/*.{js,mjs,cjs,ts}\"",
     "lint": "eslint \"src/**/*.{js,mjs,cjs,ts}\" --fix",
     "prepare": "husky",
-    "start": "tsx src/index.ts"
+    "start": "tsx src/main.ts"
   },
   "repository": {
     "type": "git",

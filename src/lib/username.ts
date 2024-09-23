@@ -1,4 +1,4 @@
-export function parseArgs(): string {
+export function username(): string {
 	let result = "";
 	const args = process.argv;
 	for (let i = 0; i < args.length; i++) {
