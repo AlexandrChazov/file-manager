@@ -98,56 +98,77 @@ process.stdin.on("data", (buffer) => {
 		}
 		case "rn": {
 			access(path1, constants.F_OK, (err) => {
-				if (err) writeFailed();
-				access(path2, constants.F_OK, (err) => {
-					if (!err) writeFailed();
-					rename(path1, path2, (err) => {
-						if (err) writeFailed();
+				if (err) {
+					writeFailed();
+				} else {
+					access(path2, constants.F_OK, (err) => {
+						if (!err) {
+							writeFailed();
+						} else {
+							rename(path1, path2, (err) => {
+								if (err) writeFailed();
+							});
+						}
 					});
-				});
+				}
 			});
 			break;
 		}
 		case "cp": {
 			access(path1, constants.F_OK, (err) => {
-				if (err) writeFailed();
-				access(path2, constants.F_OK, (err) => {
-					if (!err) writeFailed();
-					const readStream = createReadStream(path1);
-					const writeStream = createWriteStream(path2);
-					readStream.pipe(writeStream);
-				});
+				if (err) {
+					writeFailed();
+				} else {
+					access(path2, constants.F_OK, (err) => {
+						if (!err) {
+							writeFailed();
+						} else {
+							const readStream = createReadStream(path1);
+							const writeStream = createWriteStream(path2);
+							readStream.pipe(writeStream);
+						}
+					});
+				}
 			});
 			break;
 		}
 		case "mv": {
 			access(path1, constants.F_OK, (err) => {
-				if (err) writeFailed();
-				access(path2, constants.F_OK, (err) => {
-					if (!err) writeFailed();
-					const readStream = createReadStream(path1);
-					const writeStream = createWriteStream(path2);
-					readStream.on("data", (chunk) => {
-						writeStream.write(chunk);
+				if (err) {
+					writeFailed();
+				} else {
+					access(path2, constants.F_OK, (err) => {
+						if (!err) {
+							writeFailed();
+						} else {
+							const readStream = createReadStream(path1);
+							const writeStream = createWriteStream(path2);
+							readStream.on("data", (chunk) => {
+								writeStream.write(chunk);
+							});
+							readStream.on("close", () => {
+								writeStream.close();
+							});
+							writeStream.on("close", () => {
+								rm(path1, (err) => {
+									if (err) writeFailed();
+								});
+							});
+						}
 					});
-					readStream.on("close", () => {
-						writeStream.close();
-					});
-					writeStream.on("close", () => {
-						rm(path1, (err) => {
-							if (err) writeFailed();
-						});
-					});
-				});
+				}
 			});
 			break;
 		}
 		case "rm": {
 			access(path1, constants.F_OK, (err) => {
-				if (err) writeFailed();
-				rm(path1, (err) => {
-					if (err) writeFailed();
-				});
+				if (err) {
+					writeFailed();
+				} else {
+					rm(path1, (err) => {
+						if (err) writeFailed();
+					});
+				}
 			});
 			break;
 		}
