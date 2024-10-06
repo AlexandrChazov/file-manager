@@ -1,6 +1,21 @@
-export { handleError } from "./handleError";
-export { insert } from "./insert";
-export { username } from "./username";
-export { writeCurrentDir } from "./writeCurrentDir";
-export { writeFailed } from "./writeFailed";
-export { writeInvalidInput } from "./writeInvalidInput";
+export {
+	add,
+	cat,
+	cd,
+	compress,
+	cp,
+	decompress,
+	hash,
+	ls,
+	mv,
+	osCommands,
+	rm,
+	rn,
+} from "./commands";
+export { insert, username } from "./user-input";
+export {
+	handleError,
+	writeCurrentDir,
+	writeFailed,
+	writeInvalidInput,
+} from "./logs";

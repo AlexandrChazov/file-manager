@@ -1,5 +1,5 @@
 import { arch, cpus, EOL, userInfo } from "os";
-import { writeInvalidInput } from "./lib";
+import { writeInvalidInput } from "../logs";
 
 export function osCommands(arg: string): void {
 	switch (arg) {
