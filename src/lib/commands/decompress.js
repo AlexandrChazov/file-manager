@@ -1,5 +1,5 @@
-import { createBrotliDecompress } from "zlib";
-import { createReadStream, createWriteStream } from "fs";
+import { createBrotliDecompress } from "node:zlib";
+import { createReadStream, createWriteStream } from "node:fs";
 import { handleError } from "../logs/index.js";
 
 export function decompress(path1, path2) {

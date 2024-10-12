@@ -1,4 +1,4 @@
-import { readdir, statSync } from "fs";
+import { readdir, statSync } from "node:fs";
 
 export function ls() {
 	readdir(".", (err, items) => {

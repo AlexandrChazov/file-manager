@@ -1,4 +1,4 @@
-import { access, constants, createReadStream, createWriteStream, rm } from "fs";
+import { access, constants, createReadStream, createWriteStream, rm } from "node:fs";
 import { writeFailed } from "../logs/index.js";
 
 export function mv(path1, path2) {

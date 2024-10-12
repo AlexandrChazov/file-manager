@@ -1,4 +1,4 @@
-import { arch, cpus, EOL, userInfo } from "os";
+import { arch, cpus, EOL, userInfo } from "node:os";
 import { writeInvalidInput } from "../logs/index.js";
 
 export function osCommands(arg) {

@@ -1,5 +1,5 @@
-import { createBrotliCompress } from "zlib";
-import { createReadStream, createWriteStream } from "fs";
+import { createBrotliCompress } from "node:zlib";
+import { createReadStream, createWriteStream } from "node:fs";
 import { handleError } from "../logs/index.js";
 
 export function compress(path1, path2) {

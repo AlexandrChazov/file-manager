@@ -1,4 +1,4 @@
-import { join, resolve } from "path";
+import { join, resolve } from "node:path";
 
 export function cd(arg) {
 	if (arg === "..") {

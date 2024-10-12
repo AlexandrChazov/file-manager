@@ -1,4 +1,4 @@
-import { access, constants, rm as fs_rm } from "fs";
+import { access, constants, rm as fs_rm } from "node:fs";
 import { writeFailed } from "../logs/index.js";
 
 export function rm(path) {

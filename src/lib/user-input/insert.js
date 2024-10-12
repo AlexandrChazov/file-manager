@@ -1,4 +1,4 @@
-import { join } from "path";
+import { join } from "node:path";
 
 export function insert(data) {
 	const args = data.toString().trim().split(" ");

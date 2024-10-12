@@ -1,4 +1,4 @@
-import { access, constants, rename } from "fs";
+import { access, constants, rename } from "node:fs";
 import { writeFailed } from "../logs/index.js";
 
 export function rn(path1, path2) {
