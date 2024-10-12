@@ -1,7 +1,7 @@
 import { access, constants, createReadStream, createWriteStream, rm } from "fs";
-import { writeFailed } from "../logs";
+import { writeFailed } from "../logs/index.js";
 
-export function mv(path1: string, path2: string): void {
+export function mv(path1, path2) {
 	access(path1, constants.F_OK, (err) => {
 		if (err) {
 			writeFailed();

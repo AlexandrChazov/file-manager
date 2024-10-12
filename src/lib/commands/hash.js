@@ -1,8 +1,8 @@
 import { createHash } from "crypto";
 import { createReadStream } from "fs";
-import { writeFailed } from "../logs";
+import { writeFailed } from "../logs/index.js";
 
-export function hash(path: string): void {
+export function hash(path) {
 	const hash = createHash("sha256");
 	const readStream = createReadStream(path);
 	readStream.on("data", (chunk) => {

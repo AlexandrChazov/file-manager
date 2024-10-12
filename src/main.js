@@ -18,7 +18,7 @@ import {
 	writeCurrentDir,
 	writeFailed,
 	writeInvalidInput,
-} from "./lib";
+} from "./lib/index.js";
 
 process.chdir(homedir());
 process.stdout.write(`Welcome to the File Manager, ${username()}!\n`);

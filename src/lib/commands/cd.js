@@ -1,6 +1,6 @@
 import { join, resolve } from "path";
 
-export function cd(arg: string): void {
+export function cd(arg) {
 	if (arg === "..") {
 		process.chdir(arg);
 	} else {

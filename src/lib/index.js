@@ -11,11 +11,11 @@ export {
 	osCommands,
 	rm,
 	rn,
-} from "./commands";
-export { insert, username } from "./user-input";
+} from "./commands/index.js";
+export { insert, username } from "./user-input/index.js";
 export {
 	handleError,
 	writeCurrentDir,
 	writeFailed,
 	writeInvalidInput,
-} from "./logs";
+} from "./logs/index.js";

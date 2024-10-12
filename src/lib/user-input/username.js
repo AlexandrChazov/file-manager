@@ -1,4 +1,4 @@
-export function username(): string {
+export function username() {
 	let result = "";
 	const args = process.argv;
 	for (let i = 0; i < args.length; i++) {

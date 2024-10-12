@@ -1,6 +1,6 @@
 import { createReadStream } from "fs";
 
-export function cat(path: string) {
+export function cat(path) {
 	let result = "";
 	const readStream = createReadStream(path);
 	readStream.on("data", (chunk) => {

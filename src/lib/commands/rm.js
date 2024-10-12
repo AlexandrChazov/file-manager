@@ -1,7 +1,7 @@
 import { access, constants, rm as fs_rm } from "fs";
-import { writeFailed } from "../logs";
+import { writeFailed } from "../logs/index.js";
 
-export function rm(path: string): void {
+export function rm(path) {
 	access(path, constants.F_OK, (err) => {
 		if (err) {
 			writeFailed();

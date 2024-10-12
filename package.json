@@ -3,15 +3,12 @@
   "version": "1.0.0",
   "description": "File Manager written in Node.js",
   "engines": {
-    "node": ">=20.0.0"
+    "node": "22.9.0"
   },
-  "main": "src/main.ts",
+  "main": "src/main.js",
   "type": "module",
   "scripts": {
-    "format": "prettier --write \"src/**/*.{js,mjs,cjs,ts}\"",
-    "lint": "eslint \"src/**/*.{js,mjs,cjs,ts}\" --fix",
-    "prepare": "husky",
-    "start": "tsx src/main.ts"
+    "start": "node src/main.js"
   },
   "repository": {
     "type": "git",
@@ -27,28 +24,5 @@
   "bugs": {
     "url": "https://github.com/AlexandrChazov/file-manager/issues"
   },
-  "homepage": "https://github.com/AlexandrChazov/file-manager#readme",
-  "devDependencies": {
-    "@eslint/js": "^9.10.0",
-    "@types/node": "^22.5.5",
-    "eslint": "^9.10.0",
-    "eslint-config-prettier": "^9.1.0",
-    "globals": "^15.9.0",
-    "husky": "^9.1.6",
-    "lint-staged": "^15.2.10",
-    "prettier": "^3.3.3",
-    "tsx": "^4.19.1",
-    "typescript-eslint": "^8.6.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.{js,ts,jsx,tsx}": [
-      "npm run lint",
-      "npm run format"
-    ]
-  }
+  "homepage": "https://github.com/AlexandrChazov/file-manager#readme"
 }
