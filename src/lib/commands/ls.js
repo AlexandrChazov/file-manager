@@ -1,17 +1,19 @@
 import { readdir, statSync } from "node:fs";
 
 export function ls() {
-	readdir(".", (err, items) => {
+	readdir(process.cwd(), (err, items) => {
 		const directories = [];
 		const files = [];
 		items.forEach((item) => {
-			const stats = statSync(item);
-			const isDirectory = stats.isDirectory();
-			if (isDirectory) {
-				directories.push(item);
-			} else {
-				files.push(item);
-			}
+			try {
+				const stats = statSync(item, { throwIfNoEntry: false });
+				const isDirectory = stats.isDirectory();
+				if (isDirectory) {
+					directories.push(item);
+				} else {
+					files.push(item);
+				}
+			} catch {}
 		});
 		directories.sort();
 		files.sort();
