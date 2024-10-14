@@ -1,30 +1,22 @@
-import { access, constants, createReadStream, createWriteStream, rm } from "node:fs";
-import { writeFailed } from "../logs/index.js";
+import { basename, join } from "node:path";
+import { createReadStream, createWriteStream } from "node:fs";
+import { rm } from "node:fs/promises";
+import { handleError } from "../logs/index.js";
 
 export function mv(path1, path2) {
-	access(path1, constants.F_OK, (err) => {
-		if (err) {
-			writeFailed();
-		} else {
-			access(path2, constants.F_OK, (err) => {
-				if (!err) {
-					writeFailed();
-				} else {
-					const readStream = createReadStream(path1);
-					const writeStream = createWriteStream(path2);
-					readStream.on("data", (chunk) => {
-						writeStream.write(chunk);
-					});
-					readStream.on("close", () => {
-						writeStream.close();
-					});
-					writeStream.on("close", () => {
-						rm(path1, (err) => {
-							if (err) writeFailed();
-						});
-					});
-				}
-			});
-		}
-	});
+	try {
+		const readStream = createReadStream(path1);
+		const writeStream = createWriteStream(join(path2, basename(path1)));
+		readStream.on("data", (chunk) => {
+			writeStream.write(chunk);
+		});
+		readStream.on("close", () => {
+			writeStream.close();
+		});
+		writeStream.on("close", () => {
+			rm(path1);
+		});
+	} catch {
+		handleError()
+	}
 }

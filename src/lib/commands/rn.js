@@ -1,20 +1,11 @@
-import { access, constants, rename } from "node:fs";
+import { dirname, join, basename } from "node:path";
+import { rename } from "node:fs/promises";
 import { writeFailed } from "../logs/index.js";
 
-export function rn(path1, path2) {
-	access(path1, constants.F_OK, (err) => {
-		if (err) {
-			writeFailed();
-		} else {
-			access(path2, constants.F_OK, (err) => {
-				if (!err) {
-					writeFailed();
-				} else {
-					rename(path1, path2, (err) => {
-						if (err) writeFailed();
-					});
-				}
-			});
-		}
-	});
+export async function rn(path1, path2) {
+	try {
+		await rename(path1, join(dirname(path1), basename(path2)));
+	} catch {
+		writeFailed();
+	}
 }

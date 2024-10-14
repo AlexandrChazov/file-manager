@@ -1,10 +1,10 @@
-import { writeFile } from "node:fs";
+import { writeFile } from "node:fs/promises";
 import { writeFailed } from "../logs/index.js";
 
-export function add(path) {
-	writeFile(path, "", (err) => {
-		if (err) {
-			writeFailed();
-		}
-	});
+export async function add(path) {
+	try {
+		await writeFile(path, "");
+	} catch {
+		writeFailed();
+	}
 }
