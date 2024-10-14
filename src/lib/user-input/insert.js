@@ -1,11 +1,22 @@
-import { join } from "node:path";
+import { delimiter, join, resolve } from "node:path";
 
-export function insert(data) {
-	const args = data.toString().trim().split(" ");
+export function insert(input) {
+	const args = input.toString().trim().split(" ");
+	const inputString = input.toString();
+	const command = inputString.match(/^\s*\w+\s+/)[0];
+
+	const withoutCommand = inputString.replace(command, "");
+
+	const arg = (withoutCommand.match(/--\w+/) || "")[0];
+
+	// Whitespaces can be used in pathname
+	const path = resolve(join(...withoutCommand.split(delimiter))).trim();
+
 	return {
-		command: args[0],
-		arg: args[1],
-		path1: join(process.cwd(), args[1] || ""),
-		path2: join(process.cwd(), args[2] || ""),
+		command: command.trim(),
+		arg,
+		path,
+		path1: resolve(join(args[1] || "")),
+		path2: resolve(join(args[2] || "")),
 	};
 }

@@ -25,8 +25,8 @@ process.stdout.write(`Welcome to the File Manager, ${username()}!\n`);
 writeCurrentDir();
 process.stdout.write("Enter a command.\n");
 
-process.stdin.on("data", (buffer) => {
-	const { command, arg, path1, path2 } = insert(buffer);
+process.stdin.on("data", (inputBuffer) => {
+	const { arg, command, path, path1, path2 } = insert(inputBuffer);
 	switch (command) {
 		case ".exit": {
 			process.exit(0);
@@ -37,7 +37,7 @@ process.stdin.on("data", (buffer) => {
 			break;
 		}
 		case "cd": {
-			cd(arg);
+			cd(path);
 			break;
 		}
 		case "ls": {
@@ -45,11 +45,11 @@ process.stdin.on("data", (buffer) => {
 			break;
 		}
 		case "cat": {
-			cat(path1);
+			cat(path);
 			break;
 		}
 		case "add": {
-			add(path1);
+			add(path);
 			break;
 		}
 		case "rn": {
@@ -65,7 +65,7 @@ process.stdin.on("data", (buffer) => {
 			break;
 		}
 		case "rm": {
-			rm(path1);
+			rm(path);
 			break;
 		}
 		case "os": {
@@ -73,7 +73,7 @@ process.stdin.on("data", (buffer) => {
 			break;
 		}
 		case "hash": {
-			hash(path1);
+			hash(path);
 			break;
 		}
 		case "compress": {
