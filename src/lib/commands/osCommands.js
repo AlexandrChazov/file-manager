@@ -1,7 +1,7 @@
-import { arch, cpus, EOL, userInfo } from "os";
-import { writeInvalidInput } from "./lib";
+import { arch, cpus, EOL, userInfo } from "node:os";
+import { writeInvalidInput } from "../logs/index.js";
 
-export function osCommands(arg: string): void {
+export function osCommands(arg) {
 	switch (arg) {
 		case "--EOL": {
 			process.stdout.write(`${JSON.stringify(EOL)}\n`);
